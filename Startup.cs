@@ -29,7 +29,17 @@ namespace UserManagement
         {
             // Add framework services.
             services.AddMvc();
-            services.AddCors();
+            services.AddCors(options => 
+            {
+                options.AddPolicy("AllowAllOrigins", 
+                    builder => 
+                    {
+                        builder
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowAnyOrigin();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +48,9 @@ namespace UserManagement
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            // IMPORTANT: Make sure UserCors() is called first!
+            app.UseCors("AllowAllOrigins");
+            
             app.UseMvc();
         }
     }
