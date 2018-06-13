@@ -28,7 +28,8 @@ namespace UserManagement
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
+
+            // Register CORS service and define a policy.
             services.AddCors(options => 
             {
                 options.AddPolicy("AllowAllOrigins", 
@@ -40,6 +41,8 @@ namespace UserManagement
                             .AllowAnyOrigin();
                     });
             });
+
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,9 +51,9 @@ namespace UserManagement
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            // IMPORTANT: Make sure UserCors() is called first!
+            // IMPORTANT: Make sure UseCors() is called first!
             app.UseCors("AllowAllOrigins");
-            
+
             app.UseMvc();
         }
     }
